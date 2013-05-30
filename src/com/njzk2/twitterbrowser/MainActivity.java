@@ -60,13 +60,6 @@ public class MainActivity extends ListActivity {
 		mRequestQueue.add(request);
 	}
 
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.activity_main, menu);
-		return true;
-	}
-
 	private static class BitmapLru extends LruCache<String, Bitmap> implements ImageCache {
 
 		public BitmapLru(int maxSize) {
