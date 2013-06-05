@@ -6,17 +6,18 @@ import java.util.Map;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
-import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 
-public class TweetsRequest extends JsonArrayRequest {
+public class TweetsRequest extends JsonObjectRequest {
 
-	public TweetsRequest(String url, Listener<JSONArray> listener, ErrorListener errorListener, List<NameValuePair> params) {
-		super(url + "?" + URLEncodedUtils.format(params, "UTF-8"), listener, errorListener);
+	public TweetsRequest(String url, Listener<JSONObject> listener, ErrorListener errorListener,
+			List<NameValuePair> params) {
+		super(url + "?" + URLEncodedUtils.format(params, "UTF-8"), null, listener, errorListener);
 	}
 
 	@Override

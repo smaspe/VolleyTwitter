@@ -1,23 +1,21 @@
 package com.njzk2.twitterbrowser;
 
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.ListActivity;
-import android.graphics.Bitmap;
+import android.app.SearchManager;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.util.LruCache;
 import android.util.Log;
-import android.view.Menu;
+import android.view.Window;
 
-import com.android.volley.RequestQueue;
 import com.android.volley.Request.Method;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.ImageLoader.ImageCache;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -28,10 +26,12 @@ public class MainActivity extends ListActivity {
 	private TweetAdapter tweetAdapter = null;
 	public static ImageLoader mImageLoader;
 	public static RequestQueue mRequestQueue;
+	private TweetLoader tweetLoader;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_main);
 		mRequestQueue = Volley.newRequestQueue(this);
 		mImageLoader = new ImageLoader(mRequestQueue, new BitmapLru(64000));
@@ -43,8 +43,12 @@ public class MainActivity extends ListActivity {
 					Log.w(TAG, object.optString("access_token"));
 					TwitterValues.ACCESS_TOKEN = object.optString("access_token");
 
-					tweetAdapter = new TweetAdapter(MainActivity.this, "Maitre_Eolas");
+					tweetAdapter = new TweetAdapter(MainActivity.this);
+					tweetLoader = new TweetLoader(tweetAdapter, MainActivity.this);
 					setListAdapter(tweetAdapter);
+					EndlessScrollListener listener = new EndlessScrollListener();
+					listener.setOnEndReachedListener(tweetLoader);
+					getListView().setOnScrollListener(listener);
 
 				} catch (JSONException e) {
 					e.printStackTrace();
@@ -58,23 +62,14 @@ public class MainActivity extends ListActivity {
 			}
 		});
 		mRequestQueue.add(request);
+		onSearchRequested();
 	}
 
-	private static class BitmapLru extends LruCache<String, Bitmap> implements ImageCache {
-
-		public BitmapLru(int maxSize) {
-			super(maxSize);
+	@Override
+	protected void onNewIntent(Intent intent) {
+		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+			String query = intent.getStringExtra(SearchManager.QUERY);
+			tweetLoader.setQuery(query);
 		}
-
-		@Override
-		public Bitmap getBitmap(String url) {
-			return get(url);
-		}
-
-		@Override
-		public void putBitmap(String url, Bitmap bitmap) {
-			put(url, bitmap);
-		}
-
 	}
 }

@@ -4,5 +4,6 @@
     <string name="menu_settings">Settings</string>
     <string name="title_activity_main">Tweets</string>
     <string name="loading">Loading</string>
+    <string name="search">Search a hashtag</string>
 
 </resources>

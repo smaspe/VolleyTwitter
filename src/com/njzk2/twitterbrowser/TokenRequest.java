@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.util.Base64;
-import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response.ErrorListener;
@@ -27,10 +26,8 @@ final class TokenRequest extends StringRequest {
 	public Map<String, String> getHeaders() throws AuthFailureError {
 		Map<String, String> headers = new HashMap<String, String>();
 		String auth = "Basic "
-				+ Base64.encodeToString(
-						(TwitterValues.CONSUMER_KEY + ":" + TwitterValues.CONSUMER_SECRET).getBytes(),
+				+ Base64.encodeToString((TwitterValues.CONSUMER_KEY + ":" + TwitterValues.CONSUMER_SECRET).getBytes(),
 						Base64.NO_WRAP);
-		Log.d(MainActivity.TAG, "Auth " + auth);
 		headers.put("Authorization", auth);
 		return headers;
 	}
