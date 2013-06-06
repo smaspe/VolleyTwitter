@@ -49,6 +49,7 @@ public class MainActivity extends ListActivity {
 					EndlessScrollListener listener = new EndlessScrollListener();
 					listener.setOnEndReachedListener(tweetLoader);
 					getListView().setOnScrollListener(listener);
+					onSearchRequested();
 
 				} catch (JSONException e) {
 					e.printStackTrace();
@@ -62,7 +63,6 @@ public class MainActivity extends ListActivity {
 			}
 		});
 		mRequestQueue.add(request);
-		onSearchRequested();
 	}
 
 	@Override
